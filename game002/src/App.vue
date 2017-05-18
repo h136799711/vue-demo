@@ -1,13 +1,18 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
     <router-view></router-view>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'app'
+  name: 'app',
+  metaInfo: {
+    title: '老虎机大抽奖',
+    link: [
+      { rel: 'favicon', href: 'favicon.ico' }
+    ]
+  }
 }
 </script>
 
