@@ -10,7 +10,7 @@
           <h2 class="tit-lott">今日最幸运</h2>
           <!--抽奖-->
           <div class="lottery-box2">
-            <a href="javascript:void(0);" class="logo2"><img src="../assets/logo/logo_qu_white_shadow_189.png" alt=""></a>
+            <a href="javascript:void(0);" class="logo2"><img src="../assets/logo/lzg_logo.jpg" alt=""></a>
             <div class="btn-lottery-start" :class="(this.pulling === 1 ? 'rotate' : '' )" v-on:click="start" id="js_lhjStartBtn">
               <img src="../assets/lottery/btn-switch.png" alt=""></div>
             <div class="btn-lottery-bg"></div>
@@ -55,6 +55,22 @@
           <!-- start 中奖信息以及抽奖设置-->
 
           <div class="prize-box2">
+            <div class="winners-cont">
+              <div class="loops tabs">
+                <div :class="(selected_loop === lp ? 'active':'')" class="loop-index" @click="changeLoop(lp)" v-for="lp in loop">第{{ lp }}轮 </div>
+              </div>
+              <div class="tab-content">
+                <div  :class="(selected_loop === lp ? '':'hidden')" class="winners" v-for="lp in loop">
+                  <ul >
+                    <li v-for="person in winners[lp-1]">
+                      <img class="avatar" :src="person.avatar" alt="person.nickname" />
+                      <div>{{ person.nickname }}</div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
             <div class="">
               <span style="color: #ffffff;">抽取人数</span>
               <select v-model="current_winners_num" style="width: 55px;font-size: 22px;display: inline-block;" >
@@ -116,11 +132,73 @@
       }
     },
     methods: {
+      changeLoop: function (lp) {
+        this.selected_loop = lp
+        console.log('当前查看的轮次', this.selected_loop)
+      },
       fetchData: function () {
         // 获取数据
         console.log('读取数据中...', this.$route.query)
         this.activity_id = parseInt(this.$route.query['act_id'])
-        this.winners = []
+        this.winners = [
+          [
+            {
+              'avatar': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
+              'nickname': '王大国',
+              'uid': 1188
+            }],
+          [ {
+            'avatar': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
+            'nickname': '王大国',
+            'uid': 1188
+          }, {
+            'avatar': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
+            'nickname': '王大国',
+            'uid': 1188
+          }],
+          [{
+            'avatar': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
+            'nickname': '王大国',
+            'uid': 1188
+          }, {
+            'avatar': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
+            'nickname': '王大国',
+            'uid': 1188
+          }, {
+            'avatar': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
+            'nickname': '王大国',
+            'uid': 1188
+          }, {
+            'avatar': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
+            'nickname': '王大国',
+            'uid': 1188
+          }, {
+            'avatar': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
+            'nickname': '王大国',
+            'uid': 1188
+          }, {
+            'avatar': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
+            'nickname': '王大国',
+            'uid': 1188
+          }, {
+            'avatar': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
+            'nickname': '王大国',
+            'uid': 1188
+          }, {
+            'avatar': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
+            'nickname': '王大国',
+            'uid': 1188
+          }, {
+            'avatar': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
+            'nickname': '王大国',
+            'uid': 1188
+          }, {
+            'avatar': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
+            'nickname': '王大国',
+            'uid': 1188
+          } ]
+        ]
+        this.loop = this.winners.length
       },
       syncCookies: function () {
         // 同步数据到cookies
@@ -166,7 +244,6 @@
         if (this.state === 0) {
           console.log('第' + this.loop + '轮抽奖开始')
           // 初始化
-          this.loop++
           this.pulling = 1
           this.lightOnIndex = 1
           this.twinkleCnt = 0
@@ -179,6 +256,8 @@
         console.log('抽奖结束')
         this.state = 0
         this.scroll = 0
+        this.loop++
+        this.selected_loop = this.loop
       },
       getWinners: function () {
         // 获取中奖人
@@ -187,6 +266,7 @@
     },
     data () {
       return {
+        selected_loop: 0, // 当前查看的抽奖轮次
         activity_id: 0, // 活动id
         loop: 0, // 抽奖轮次
         scroll: 0, // 标记滚动 0：无操作 1: 滚动 2：停止

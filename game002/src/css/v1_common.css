@@ -534,7 +534,7 @@ li.t-row .with-map{ position:absolute; top:26px; right:0; max-width:158px;}
 /*.avatar-list li.curr {border-color: #F03D0E;}*/
 .btn-lottery-start{ position:absolute; top:120px; right:-64px; z-index:10; width:64px; height:204px; cursor:pointer;}
 .btn-lottery-bg{  background:url(../assets/lottery/btn-switch-bg.png) no-repeat; width:15px; height:133px; position:absolute; top:191px; right:-15px;}
-.logo2{ position:absolute; bottom:-5px; left:50%; margin-left:-60px; display:inline-block; width:120px; height:auto;}
+.logo2{ position:absolute; bottom:-5px; left:50%; margin-left:-70px; display:inline-block; width:140px; height:auto;}
 .logo2 img{ width:100%; height:auto;}
 .point-box{}
 .point-list{ position:absolute;}
@@ -768,4 +768,46 @@ li.t-row .with-map{ position:absolute; top:26px; right:0; max-width:158px;}
   100% {
     transform: translate(0px, -432px);
   }
+}
+
+.loops{
+  padding: 0;
+  position: relative;
+  margin: 0px;
+  float: left;
+  width: 50%;
+}
+.loops .loop-index.active{
+  color: #948080;
+  background-color: white;
+  border: 1px solid #ffffff;
+}
+.loops .loop-index{
+
+  background-color: #deb1b1;
+  color: #808080;
+  float: left;
+  padding: 5px;
+  cursor: pointer;
+  border: 1px solid #deb1b1;
+  border-radius: 4px 4px 0 0;
+}
+.winners-cont .tab-content{
+
+  background: #fff;
+  height: 135px;
+  float: left;
+  width: 100%;
+  margin-top: -1px;
+}
+.winners .avatar{
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}
+.winners li{
+  float: left;
+  width: 86px;
+  margin: 15px auto;
+  margin-top: 20px;
 }
