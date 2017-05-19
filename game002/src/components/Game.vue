@@ -95,6 +95,8 @@
 
 
 <script>
+  import axios from 'axios'
+
   export default {
     name: 'game',
     computed: {
@@ -129,6 +131,7 @@
       winners: function (newQuestion) {
         console.log('准备同步中奖人信息到本地cookies...')
         this.syncCookies()
+        this.loop = this.winners.length
       }
     },
     methods: {
@@ -140,6 +143,7 @@
         // 获取数据
         console.log('读取数据中...', this.$route.query)
         this.activity_id = parseInt(this.$route.query['act_id'])
+
         this.winners = [
           [
             {
@@ -198,7 +202,23 @@
             'uid': 1188
           } ]
         ]
-        this.loop = this.winners.length
+
+        if (this.activity_id > 0) {
+          axios({
+            method: 'post',
+            url: '/webview/query_people?aid=22',
+            data: {
+              aid: this.activity_id,
+              count: 100
+            }
+          })
+          .then(function (res) {
+            console.log(res)
+          })
+          .catch(function (err) {
+            console.log(err)
+          })
+        }
       },
       syncCookies: function () {
         // 同步数据到cookies
