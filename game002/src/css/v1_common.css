@@ -778,7 +778,7 @@ li.t-row .with-map{ position:absolute; top:26px; right:0; max-width:158px;}
   position: relative;
   margin: 0px;
   float: left;
-  width: 50%;
+  width: 80%;
 }
 .loops .loop-index.active{
   color: #948080;
@@ -807,10 +807,18 @@ li.t-row .with-map{ position:absolute; top:26px; right:0; max-width:158px;}
   width: 60px;
   height: 60px;
   border-radius: 50%;
+  line-height: 60px;
+  color: #fff;
 }
 .winners li{
   float: left;
   width: 86px;
   margin: 15px auto;
   margin-top: 20px;
+}
+.winners li div.nickname{
+  width: 86px;
+  overflow: hidden;
+  font-size: 14px;
+  text-overflow: ellipsis;
 }

@@ -64,7 +64,7 @@
                   <ul >
                     <li v-for="person in winners[lp-1]">
                       <img class="avatar" :src="person.head" :alt="person.nickname" />
-                      <div>{{ person.nickname }}</div>
+                      <div class="nickname">{{ person.nickname }}</div>
                     </li>
                   </ul>
                 </div>
@@ -104,24 +104,30 @@
         return this.persons.length > 0
       },
       totalRandomPerson: function () {
-        var limits = 5
+        var limits = 10
         var total = this.persons.length
         var totalRandom = []
+
         for (var i = 0; i < this.current_winners_num; i++) {
           var startRandIndex = parseInt(total * Math.random())
-          var random = this.persons.slice(startRandIndex)
-          var need = limits - random.length
-          if (need > 0) {
-            random = random.concat(this.persons.slice(0, need))
+          var random = []
+          if (total - startRandIndex < limits) {
+            random = this.persons.slice(startRandIndex, total)
+            var need = limits - random.length
+            if (need > 0) {
+              random = random.concat(this.persons.slice(0, need))
+            }
+          } else {
+            random = this.persons.slice(startRandIndex, startRandIndex + limits)
           }
 
-          // console.log('随机数组', random)
           totalRandom[i] = random
         }
 
         if (this.scroll === 2) {
           // 设置中奖人
         }
+        console.log('随机数组', totalRandom)
         return totalRandom
       }
     },
@@ -135,6 +141,7 @@
         console.log('准备同步中奖人信息到本地cookies...', newWinners)
         this.syncCookies()
         this.loop = this.winners.length
+        this.selected_loop = this.winners.length
       }
     },
     methods: {
@@ -210,14 +217,8 @@
         ]
 
         if (this.activity_id > 0) {
-          axios({
-            method: 'post',
-            url: '/webview/query_people?aid=22',
-            data: {
-              aid: this.activity_id,
-              count: 200
-            }
-          }).then(function (res) {
+          var q = '?aid=' + this.activity_id + '&limit=200'
+          axios.get('/webview/query_people' + q).then(function (res) {
             console.log(this, res.data)
             var prizes = res.data.prizes
 
@@ -246,6 +247,7 @@
         return (this.lightOnIndex === 999999 || (parseInt(curLight) === (this.lightOnIndex % 50)))
       },
       twinkle: function () {
+        if (this.state === 0) return
         console.log('滚动结束、缓慢滚动')
         this.scroll = 2
         this.twinkleCnt ++
@@ -257,22 +259,28 @@
         if (this.twinkleCnt < 8) {
           setTimeout(this.twinkle, 500)
         } else {
-          this.stop()
+          this.stop(true)
         }
       },
       scrollLight: function () {
+        if (this.state === 0) return
         console.log('开始滚动')
         this.pulling = 0
         this.lightOnIndex++
         this.scrollItemIndex = (this.scrollItemIndex + 1) % 5
         // 5秒= 5000 / 800 = 6轮
         // 一圈 50
-        if (this.lightOnIndex > 2 * 50) {
+        if (this.getWinnerSuccess && this.lightOnIndex > 2 * 50) {
           this.lightOnIndex = 999999
           this.twinkle()
         } else {
-          this.scroll = 1
-          setTimeout(this.scrollLight, 100)
+          if (this.lightOnIndex >= 5 * 50) {
+            alert('请求超时，请重新进行该次抽奖')
+            this.stop(false)
+          } else {
+            this.scroll = 1
+            setTimeout(this.scrollLight, 100)
+          }
         }
       },
       // 开始抽奖,转动
@@ -290,24 +298,48 @@
           this.twinkleCnt = 0
           // 开始抽奖
           this.state = 1
+          this.getWinners()
           setTimeout(this.scrollLight, 1600)
         }
       },
-      stop: function () {
+      stop: function (success) {
         console.log('抽奖结束')
         this.state = 0
         this.scroll = 0
-        this.loop++
-        this.selected_loop = this.loop
+        if (success) {
+          this.loop++
+          this.winners.push(this.currentWinners)
+          this.selected_loop = this.loop
+        }
       },
       getWinners: function () {
+        this.getWinnerSuccess = false
         // 获取中奖人
         // 参数 轮次: loop, 活动id: id
+
+        var q = '?aid=' + this.activity_id + '&count=' + this.current_winners_num
+        axios.post('/webview/draw' + q).then(function (res) {
+          console.log(this, res.data)
+          var data = res.data
+
+          if (data.status) {
+            this.getWinnerSuccess = true
+            this.currentWinners = data.info
+          } else {
+            alert('返回数据非法')
+            this.stop(false)
+          }
+        }.bind(this)).catch(function (err) {
+          console.log(this, err)
+          alert('请求出错,请重新抽奖')
+          this.stop(false)
+        }.bind(this))
       }
     },
     data () {
       return {
-        iseady: false, // 是否准备好了，用于标记是否可以启动start
+        currentWinners: [], // 当前中奖人信息，临时缓存
+        getWinnerSuccess: false, // 是否获取到中奖人信息
         selected_loop: 0, // 当前查看的抽奖轮次
         activity_id: 0, // 活动id
         loop: 0, // 抽奖轮次

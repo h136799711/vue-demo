@@ -12,6 +12,7 @@ Vue.use(Cookie)
 axios.defaults.baseURL = 'http://dev.lzg.8raw.com/weixin.php/weixin/'
 // axios.defaults.headers.common['Authorization'] = 'itboye-laohuji'
 axios.defaults.headers.common['X-Requested-With'] = 'itboye-laohuji'
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 
 export default new Router({
   routes: [
