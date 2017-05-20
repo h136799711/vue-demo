@@ -693,6 +693,9 @@ li.t-row .with-map{ position:absolute; top:26px; right:0; max-width:158px;}
 .s-box .person{
   height: 108px;
   width: 108px;
+  text-align: center;
+  line-height: 104px;
+  color: #fff;
 }
 
 .s-box.scroll{

@@ -38,7 +38,7 @@
                   <li >
                     <div :class="(scroll === 1 ?'scroll':(scroll === 2?'scroll-stop':''))" class="s-box clearfix">
                       <div class="clearfix person" v-for="person in random"  :data-person-id="person.uid">
-                        <img :src="person.avatar" :alt="person.nickname"/>
+                        <img :src="person.head" :alt="person.nickname"/>
                       </div>
                     </div>
                   </li>
@@ -55,7 +55,7 @@
           <!-- start 中奖信息以及抽奖设置-->
 
           <div class="prize-box2">
-            <div class="winners-cont">
+            <div class="winners-cont" :class="(winners.length == 0?'hidden':'3'+winners.length)">
               <div class="loops tabs">
                 <div :class="(selected_loop === lp ? 'active':'')" class="loop-index" @click="changeLoop(lp)" v-for="lp in loop">第{{ lp }}轮 </div>
               </div>
@@ -63,7 +63,7 @@
                 <div  :class="(selected_loop === lp ? '':'hidden')" class="winners" v-for="lp in loop">
                   <ul >
                     <li v-for="person in winners[lp-1]">
-                      <img class="avatar" :src="person.avatar" alt="person.nickname" />
+                      <img class="avatar" :src="person.head" :alt="person.nickname" />
                       <div>{{ person.nickname }}</div>
                     </li>
                   </ul>
@@ -71,7 +71,7 @@
               </div>
             </div>
 
-            <div class="">
+            <div class="" style="text-align: right;">
               <span style="color: #ffffff;">抽取人数</span>
               <select v-model="current_winners_num" style="width: 55px;font-size: 22px;display: inline-block;" >
                 <option v-for="num in winners_numbers" >{{ num }}</option>
@@ -100,6 +100,9 @@
   export default {
     name: 'game',
     computed: {
+      isReady: function () {
+        return this.persons.length > 0
+      },
       totalRandomPerson: function () {
         var limits = 5
         var total = this.persons.length
@@ -128,13 +131,16 @@
     },
     watch: {
       // 如果 question 发生改变，这个函数就会运行
-      winners: function (newQuestion) {
-        console.log('准备同步中奖人信息到本地cookies...')
+      winners: function (newWinners, oldValue) {
+        console.log('准备同步中奖人信息到本地cookies...', newWinners)
         this.syncCookies()
         this.loop = this.winners.length
       }
     },
     methods: {
+      isArray: function (o) {
+        return Object.prototype.toString.call(o) === '[object Array]'
+      },
       changeLoop: function (lp) {
         this.selected_loop = lp
         console.log('当前查看的轮次', this.selected_loop)
@@ -143,64 +149,64 @@
         // 获取数据
         console.log('读取数据中...', this.$route.query)
         this.activity_id = parseInt(this.$route.query['act_id'])
-
+        this.selected_loop = 1
         this.winners = [
-          [
-            {
-              'avatar': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
-              'nickname': '王大国',
-              'uid': 1188
-            }],
-          [ {
-            'avatar': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
-            'nickname': '王大国',
-            'uid': 1188
-          }, {
-            'avatar': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
-            'nickname': '王大国',
-            'uid': 1188
-          }],
-          [{
-            'avatar': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
-            'nickname': '王大国',
-            'uid': 1188
-          }, {
-            'avatar': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
-            'nickname': '王大国',
-            'uid': 1188
-          }, {
-            'avatar': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
-            'nickname': '王大国',
-            'uid': 1188
-          }, {
-            'avatar': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
-            'nickname': '王大国',
-            'uid': 1188
-          }, {
-            'avatar': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
-            'nickname': '王大国',
-            'uid': 1188
-          }, {
-            'avatar': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
-            'nickname': '王大国',
-            'uid': 1188
-          }, {
-            'avatar': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
-            'nickname': '王大国',
-            'uid': 1188
-          }, {
-            'avatar': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
-            'nickname': '王大国',
-            'uid': 1188
-          }, {
-            'avatar': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
-            'nickname': '王大国',
-            'uid': 1188
-          }, {
-            'avatar': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
-            'nickname': '王大国',
-            'uid': 1188
-          } ]
+//          [
+//            {
+//              'head': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
+//              'nickname': '王大国',
+//              'uid': 1188
+//            }],
+//          [ {
+//            'head': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
+//            'nickname': '王大国',
+//            'uid': 1188
+//          }, {
+//            'head': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
+//            'nickname': '王大国',
+//            'uid': 1188
+//          }],
+//          [{
+//            'head': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
+//            'nickname': '王大国',
+//            'uid': 1188
+//          }, {
+//            'head': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
+//            'nickname': '王大国',
+//            'uid': 1188
+//          }, {
+//            'head': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
+//            'nickname': '王大国',
+//            'uid': 1188
+//          }, {
+//            'head': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
+//            'nickname': '王大国',
+//            'uid': 1188
+//          }, {
+//            'head': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
+//            'nickname': '王大国',
+//            'uid': 1188
+//          }, {
+//            'head': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
+//            'nickname': '王大国',
+//            'uid': 1188
+//          }, {
+//            'head': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
+//            'nickname': '王大国',
+//            'uid': 1188
+//          }, {
+//            'head': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
+//            'nickname': '王大国',
+//            'uid': 1188
+//          }, {
+//            'head': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
+//            'nickname': '王大国',
+//            'uid': 1188
+//          }, {
+//            'head': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
+//            'nickname': '王大国',
+//            'uid': 1188
+//          } ]
         ]
 
         if (this.activity_id > 0) {
@@ -209,15 +215,25 @@
             url: '/webview/query_people?aid=22',
             data: {
               aid: this.activity_id,
-              count: 100
+              count: 200
             }
-          })
-          .then(function (res) {
-            console.log(res)
-          })
-          .catch(function (err) {
-            console.log(err)
-          })
+          }).then(function (res) {
+            console.log(this, res.data)
+            var prizes = res.data.prizes
+
+            if (!this.isArray(prizes)) {
+              alert('返回数据非法')
+              prizes = []
+              this.persons = []
+            } else {
+              this.winners = prizes
+              this.persons = res.data.signs
+            }
+          }.bind(this)).catch(function (err) {
+            console.log(this, err)
+            this.winners = []
+            alert('请求出错,请刷新页面')
+          }.bind(this))
         }
       },
       syncCookies: function () {
@@ -261,6 +277,11 @@
       },
       // 开始抽奖,转动
       start: function () {
+        if (!this.isReady) {
+          alert('抽奖尚未准备好')
+          console.log('抽奖尚未准备好')
+          return
+        }
         if (this.state === 0) {
           console.log('第' + this.loop + '轮抽奖开始')
           // 初始化
@@ -286,6 +307,7 @@
     },
     data () {
       return {
+        iseady: false, // 是否准备好了，用于标记是否可以启动start
         selected_loop: 0, // 当前查看的抽奖轮次
         activity_id: 0, // 活动id
         loop: 0, // 抽奖轮次
@@ -301,28 +323,33 @@
 
         ],
         persons: [
-          {
-            'avatar': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
-            'nickname': '王大国',
-            'uid': 1188
-          },
-          {
-            'avatar': 'http://wx.qlogo.cn/mmopen/WKbQiaNVg489D2n65kicRvcngdlDeggO2icC5Bx7sBzOcicBBbxFLAYACJibGB3mGIzRiaQXSBR3fdR0uVjCmykCV909oictlQbTpOic/0',
-            'nickname': '李四',
-            'uid': 1187
-          },
-          {
-            'avatar': 'http://wx.qlogo.cn/mmopen/ajNVdqHZLLClShRialF0ickXCoxCcf2icR3woMdgtGYib9y0pvibzxwibAyOUkkLkugMyMMtn5N8H2fwU9kSZJD2tRHQ/0',
-            'nickname': '张三',
-            'uid': 1186
-          },
-          {
-            'avatar': 'http://cdnssl.hddpm.com/images/lottery/avatar.jpg',
-            'nickname': '张三',
-            'uid': 1186
-          },
-          {'avatar': 'http://pic55.nipic.com/file/20141208/19462408_171130083000_2.jpg', 'nickname': '王美', 'uid': 1188},
-          {'avatar': 'http://pic128.nipic.com/file/20170430/23122089_113942837038_2.jpg', 'nickname': '吴天', 'uid': 1186}
+//          {
+//            'head': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
+//            'nickname': 'Test',
+//            'uid': -1
+//          }
+//          {
+//            'head': 'http://wx.qlogo.cn/mmopen/Q3auHgzwzM4icTnDlrDAzxDoZK6EF4hDh5D7NVdhyeRCz6xzWodWeO5kFRNrXPB9nSrN53sA8oAsOmhaCJWtf2DxfC8aib1j29cpHAib3JdWOI/0',
+//            'nickname': '王大国',
+//            'uid': 1188
+//          },
+//          {
+//            'head': 'http://wx.qlogo.cn/mmopen/WKbQiaNVg489D2n65kicRvcngdlDeggO2icC5Bx7sBzOcicBBbxFLAYACJibGB3mGIzRiaQXSBR3fdR0uVjCmykCV909oictlQbTpOic/0',
+//            'nickname': '李四',
+//            'uid': 1187
+//          },
+//          {
+//            'head': 'http://wx.qlogo.cn/mmopen/ajNVdqHZLLClShRialF0ickXCoxCcf2icR3woMdgtGYib9y0pvibzxwibAyOUkkLkugMyMMtn5N8H2fwU9kSZJD2tRHQ/0',
+//            'nickname': '张三',
+//            'uid': 1186
+//          },
+//          {
+//            'head': 'http://cdnssl.hddpm.com/images/lottery/head.jpg',
+//            'nickname': '张三',
+//            'uid': 1186
+//          },
+//          {'head': 'http://pic55.nipic.com/file/20141208/19462408_171130083000_2.jpg', 'nickname': '王美', 'uid': 1188},
+//          {'head': 'http://pic128.nipic.com/file/20170430/23122089_113942837038_2.jpg', 'nickname': '吴天', 'uid': 1186}
         ]
       }
     }
