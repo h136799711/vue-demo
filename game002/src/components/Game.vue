@@ -124,8 +124,12 @@
           totalRandom[i] = random
         }
 
-        if (this.scroll === 2) {
+        if (this.getWinnerSuccess) {
+          console.log('中奖信息', this.currentWinners)
           // 设置中奖人
+          for (var j = 0; j < totalRandom.length; j++) {
+            totalRandom[j][0] = this.currentWinners[j]
+          }
         }
         console.log('随机数组', totalRandom)
         return totalRandom
